@@ -1,6 +1,8 @@
 #include "test_runner.h"
 #include <vector>
-
+#include <future>
+#include <numeric>
+#include <list>
 using namespace std;
 
 
@@ -58,6 +60,26 @@ auto Paginate(C& c, size_t page_size) {
 
 int64_t CalculateMatrixSum(const vector<vector<int>>& matrix) {
   // Реализуйте эту функцию
+	list<future<int64_t>> f_res;
+	for (auto page : Paginate(matrix, matrix.size()/3) )
+	{
+		f_res.push_back(async([page]{
+			int64_t res = 0;
+			for (auto & vec : move(page)) {
+				for (auto& i : move(vec)) {
+					res += i;
+				}
+			}
+			return res;
+			})
+			);
+	}
+	int64_t ret = 0;
+	for (auto& f : f_res)
+	{
+		ret += f.get();
+	}
+	return ret;
 }
 
 void TestCalculateMatrixSum() {
