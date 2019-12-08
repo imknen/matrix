@@ -61,12 +61,12 @@ auto Paginate(C& c, size_t page_size) {
 int64_t CalculateMatrixSum(const vector<vector<int>>& matrix) {
   // Реализуйте эту функцию
 	list<future<int64_t>> f_res;
-	for (auto page : Paginate(matrix, matrix.size()/3) )
+	for (auto page : Paginate(matrix, 2000) )
 	{
 		f_res.push_back(async([page]{
 			int64_t res = 0;
-			for (auto & vec : move(page)) {
-				for (auto& i : move(vec)) {
+			for (auto & vec : page) {
+				for (auto& i : vec) {
 					res += i;
 				}
 			}
